@@ -38,12 +38,33 @@ public class TemperatureActivity extends AppCompatActivity {
         this.port = message[1];
         this.userId = message[2];
 
-        sendTemperatureRequest();
+        Thread t1 = new GetTemperature(this, this.host, this.port, this.userId);
+        t1.start();
     }
 
-    public void sendTemperatureRequest() {
-        new TemperatureActivity.GrpcTask(this).execute(this.host, this.port,
-                this.userId, "tem1");
+    private static class GetTemperature extends Thread{
+        private Activity activity;
+        private String host, port, userId;
+
+        private GetTemperature(Activity activity, String host, String port, String userId) {
+            this.activity = activity;
+            this.host = host;
+            this.port = port;
+            this.userId = userId;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i<5; i++) {
+                new TemperatureActivity.GrpcTask(activity).execute(this.host, this.port,
+                        this.userId, "tem1");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
     }
 
     private static class GrpcTask extends AsyncTask<String, Void, String> {
@@ -89,7 +110,7 @@ public class TemperatureActivity extends AppCompatActivity {
             }
             Activity activity = activityReference.get();
             if (activity == null) {
-                return;
+                Thread.currentThread().interrupt();
             }
             if (result.equals("OK")) {
                 TextView meanText = activity.findViewById(R.id.mean);
