@@ -3,8 +3,8 @@
     <string name="get_temperature">Get Temperature</string>
     <string name="led_on">Led On</string>
     <string name="temperature_will_show_here">Temperature will show here</string>
-    <string name="host_hint">34.136.25.200</string>
-    <string name="port_hint">50051</string>
+    <string name="host_hint">HOST</string>
+    <string name="port_hint">PORT</string>
     <string name="led_off">Led Off</string>
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
@@ -14,4 +14,5 @@
     <string name="last_10_temperatures">Last 10 temperatures</string>
     <string name="last_temperature">0</string>
     <string name="temperatures">TEMPERATURES</string>
+    <string name="login_text">Login:</string>
 </resources>
