@@ -18,32 +18,33 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTextView" />
 
     <Button
         android:id="@+id/ledOnButtonRed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@color/background_botão"
         android:onClick="ledOnRequestRed"
         android:text="@string/led_on"
-        app:layout_constraintEnd_toStartOf="@+id/ledOffButtonrRed"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/ledOnButtonrGreen"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ledRedTextView"
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <Button
         android:id="@+id/ledOffButtonrRed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="80dp"
         android:backgroundTint="@color/background_botão"
         android:onClick="ledOffRequestRed"
         android:text="@string/led_off"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/ledRedTextView"
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <Button
         android:id="@+id/button"
@@ -61,14 +62,13 @@
         android:id="@+id/ledOnButtonrGreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/background_botão"
-        android:text="@string/led_on"
         android:onClick="ledOnRequestGreen"
-        app:layout_constraintEnd_toStartOf="@+id/ledOffButtonrGreen"
-        app:layout_constraintHorizontal_bias="0.391"
+        android:text="@string/led_on"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/ledGreenTextView" />
 
     <Button
         android:id="@+id/ledOffButtonrGreen"
@@ -80,7 +80,7 @@
         android:text="@string/led_off"
         android:onClick="ledOffRequestGreen"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/ledGreenTextView" />
 
     <TextView
         android:id="@+id/textView3"
@@ -94,7 +94,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/temperatureTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
@@ -105,24 +105,22 @@
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/ledGreenTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
         android:text=" Green Led"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.459"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/temperatureButton" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/ledRedTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="56dp"
         android:text="Red Led"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ledOffButtonrGreen" />
 
