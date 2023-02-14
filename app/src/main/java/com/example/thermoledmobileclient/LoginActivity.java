@@ -98,7 +98,16 @@ public class LoginActivity extends AppCompatActivity {
             Button loginButton = activity.findViewById(R.id.loginButton);
             loginButton.setEnabled(true);
             if (!result.equals("") && !result.startsWith("Failed")) {
-                Intent intent = new Intent(activity, HomeActivity.class);
+                Intent intent;
+                if (result.startsWith("usr")) {
+                    intent = new Intent(activity, HomeActivity.class);
+                }
+                else if (result.startsWith("adm")) {
+                    intent = new Intent(activity, AdminActivity.class);
+                }
+                else {
+                    return;
+                }
                 EditText hostEdit = activity.findViewById(R.id.host);
                 EditText portEdit = activity.findViewById(R.id.port);
 

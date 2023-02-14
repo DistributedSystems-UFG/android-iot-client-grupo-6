@@ -98,6 +98,9 @@ public class HomeActivity extends AppCompatActivity {
         public void run() {
             while (!activity.isDestroyed()) {
                 getUserDevices();
+                for (String device: userDevices) {
+                    System.out.println(device);
+                }
                 changeTempVisibility();
                 changeLedRedVisibility();
                 changeLedGreenVisibility();

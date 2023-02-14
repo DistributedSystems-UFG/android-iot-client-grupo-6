@@ -11,6 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ThermoLedMobileClient">
         <activity
+            android:name=".AdminActivity"
+            android:parentActivityName=".LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
+        </activity>
+        <activity
             android:name=".TemperatureActivity"
             android:parentActivityName=".HomeActivity">
             <meta-data

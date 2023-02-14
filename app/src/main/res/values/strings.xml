@@ -15,4 +15,10 @@
     <string name="last_temperature">0</string>
     <string name="temperatures">TEMPERATURES</string>
     <string name="login_text">Login:</string>
+    <string name="user_1">USER 1</string>
+    <string name="led_green">LED GREEN</string>
+    <string name="led_red">LED RED</string>
+    <string name="lights">LIGHTS</string>
+    <string name="user_2">USER 2</string>
+    <string name="user_3">USER 3</string>
 </resources>
