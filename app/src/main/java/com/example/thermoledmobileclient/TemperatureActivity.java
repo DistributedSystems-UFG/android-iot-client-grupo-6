@@ -38,8 +38,7 @@ public class TemperatureActivity extends AppCompatActivity {
         this.port = message[1];
         this.userId = message[2];
 
-        Thread t1 = new GetTemperature(this, this.host, this.port, this.userId);
-        t1.start();
+        new GetTemperature(this, this.host, this.port, this.userId).start();
     }
 
     private static class GetTemperature extends Thread{
@@ -55,11 +54,11 @@ public class TemperatureActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            for (int i = 0; i<5; i++) {
+            while (!activity.isDestroyed()) {
                 new TemperatureActivity.GrpcTask(activity).execute(this.host, this.port,
                         this.userId, "tem1");
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -112,7 +111,7 @@ public class TemperatureActivity extends AppCompatActivity {
             if (activity == null) {
                 Thread.currentThread().interrupt();
             }
-            if (result.equals("OK")) {
+            if (!listTemperatures.get(0).getDate().equals("NA")) {
                 TextView meanText = activity.findViewById(R.id.mean);
                 TextView lastText = activity.findViewById(R.id.lastTemp);
                 float mean = calculateMean();
@@ -122,6 +121,7 @@ public class TemperatureActivity extends AppCompatActivity {
             }
             else {
                 activity.finish();
+                Thread.currentThread().interrupt();
             }
         }
 
