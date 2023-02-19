@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.my1stapplication" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -8,31 +9,43 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.My1stApplication" >
+        android:theme="@style/Theme.ThermoLedMobileClient">
         <activity
-            android:name=".DisplayInfoActivity"
-            android:parentActivityName=".DisplayMessageActivity" >
+            android:name=".LightLevelActivity"
+            android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".DisplayMessageActivity" />
+                android:value=".HomeActivity" />
         </activity>
         <activity
-            android:name=".DisplayMessageActivity"
-            android:parentActivityName=".MainActivity" >
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            android:name=".AdminActivity"
+            android:parentActivityName=".LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".LoginActivity" />
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:exported="true" >
+            android:name=".TemperatureActivity"
+            android:parentActivityName=".HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeActivity" />
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".HomeActivity"
+            android:parentActivityName=".LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity" />
         </activity>
     </application>
 
