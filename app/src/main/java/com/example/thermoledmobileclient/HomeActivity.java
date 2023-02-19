@@ -28,8 +28,8 @@ import io.grpc.examples.iotservice.LedRequest;
 
 public class HomeActivity extends AppCompatActivity {
     private Button temperatureButton, ledOnButtonRed, ledOffButtonRed,
-            ledOnButtonGreen, ledOffButtonGreen;
-    private TextView temperature, ledRed, ledGreen;
+            ledOnButtonGreen, ledOffButtonGreen, lightLevelButton;
+    private TextView temperature, ledRed, ledGreen, lightLevel;
     private String host, port, userId;
 
     @Override
@@ -43,6 +43,8 @@ public class HomeActivity extends AppCompatActivity {
         this.port = message[1];
         this.userId = message[2];
 
+        lightLevel = findViewById(R.id.lighLevelTextView);
+        lightLevelButton = findViewById(R.id.lightLevelButton);
         temperature = findViewById(R.id.temperatureTextView);
         temperatureButton = findViewById(R.id.temperatureButton);
         ledRed = findViewById(R.id.ledRedTextView);
@@ -61,6 +63,13 @@ public class HomeActivity extends AppCompatActivity {
         this.startActivity(intent);
     }
 
+    public void getLightLevel(View view) {
+        Intent intent = new Intent(this, LightLevelActivity.class);
+        String message = host + "," + port + "," + userId;
+        intent.putExtra(LoginActivity.EXTRA_MESSAGE, message);
+        this.startActivity(intent);
+    }
+
     public void ledOnRequestRed(View view) {
         ledOnButtonRed.setEnabled(false);
         new GrpcTask2(this).execute(this.host, this.port, "led1", this.userId, "1");
@@ -72,20 +81,22 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void ledOnRequestGreen(View view) {
-        ledOnButtonRed.setEnabled(false);
+        ledOnButtonGreen.setEnabled(false);
         new GrpcTask2(this).execute(this.host, this.port, "led2", this.userId, "1");
     }
 
     public void ledOffRequestGreen(View view) {
-        ledOffButtonRed.setEnabled(false);
+        ledOffButtonGreen.setEnabled(false);
         new GrpcTask2(this).execute(this.host, this.port, "led2", this.userId, "0");
     }
 
     private class UIThread extends Thread {
-        private Activity activity;
+        private final Activity activity;
         private ManagedChannel channel;
-        private String host, portStr, userId;
+        private final String host, portStr, userId;
         private List<String> userDevices;
+        private int tempVisibility, ledRedVisibility,
+                ledGreenVisibility, lightLevelVisibility;
 
         private UIThread(Activity activity, String host, String port, String userId) {
             this.activity = activity;
@@ -101,63 +112,59 @@ public class HomeActivity extends AppCompatActivity {
                 for (String device: userDevices) {
                     System.out.println(device);
                 }
+                changeLightVisibility();
                 changeTempVisibility();
                 changeLedRedVisibility();
                 changeLedGreenVisibility();
+                activity.runOnUiThread(() -> {
+                    lightLevel.setVisibility(lightLevelVisibility);
+                    lightLevelButton.setVisibility(lightLevelVisibility);
+                    temperature.setVisibility(tempVisibility);
+                    temperatureButton.setVisibility(tempVisibility);
+                    ledRed.setVisibility(ledRedVisibility);
+                    ledOnButtonRed.setVisibility(ledRedVisibility);
+                    ledOffButtonRed.setVisibility(ledRedVisibility);
+                    ledGreen.setVisibility(ledGreenVisibility);
+                    ledOnButtonGreen.setVisibility(ledGreenVisibility);
+                    ledOffButtonGreen.setVisibility(ledGreenVisibility);
+                });
+            }
+        }
+
+        private void changeLightVisibility() {
+            if (userDevices.contains("lum1")) {
+                lightLevelVisibility = View.VISIBLE;
+            }
+            else {
+                lightLevelVisibility = View.GONE;
             }
         }
 
         private void changeTempVisibility() {
-            int visibility;
             if (userDevices.contains("tem1")) {
-                visibility = View.VISIBLE;
+                tempVisibility = View.VISIBLE;
             }
             else {
-                visibility = View.GONE;
+                tempVisibility = View.GONE;
             }
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    temperature.setVisibility(visibility);
-                    temperatureButton.setVisibility(visibility);
-                }
-            });
         }
 
         private void changeLedRedVisibility() {
-            int visibility;
             if (userDevices.contains("led1")) {
-                visibility = View.VISIBLE;
+                ledRedVisibility = View.VISIBLE;
             }
             else {
-                visibility = View.GONE;
+                ledRedVisibility = View.GONE;
             }
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ledRed.setVisibility(visibility);
-                    ledOnButtonRed.setVisibility(visibility);
-                    ledOffButtonRed.setVisibility(visibility);
-                }
-            });
         }
 
         private void changeLedGreenVisibility() {
-            int visibility;
             if (userDevices.contains("led2")) {
-                visibility = View.VISIBLE;
+                ledGreenVisibility = View.VISIBLE;
             }
             else {
-                visibility = View.GONE;
+                ledGreenVisibility = View.GONE;
             }
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ledGreen.setVisibility(visibility);
-                    ledOnButtonGreen.setVisibility(visibility);
-                    ledOffButtonGreen.setVisibility(visibility);
-                }
-            });
         }
 
         private void getUserDevices() {
@@ -189,7 +196,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
         private GrpcTask2(Activity activity) {
-            this.activityReference = new WeakReference<Activity>(activity);
+            this.activityReference = new WeakReference<>(activity);
         }
 
         @Override
@@ -229,27 +236,27 @@ public class HomeActivity extends AppCompatActivity {
                 return;
             }
             if (result.equals("1")) {
-                Button ledOnButton = (Button) activity.findViewById(R.id.ledOnButtonRed);
+                Button ledOnButton = activity.findViewById(R.id.ledOnButtonRed);
                 ledOnButton.setEnabled(true);
-                Button ledOnButtonGreen = (Button) activity.findViewById(R.id.ledOnButtonrGreen);
+                Button ledOnButtonGreen = activity.findViewById(R.id.ledOnButtonrGreen);
                 ledOnButtonGreen.setEnabled(true);
             } else if (result.equals("0")){
-                Button ledOffButton = (Button) activity.findViewById(R.id.ledOffButtonrRed);
+                Button ledOffButton = activity.findViewById(R.id.ledOffButtonrRed);
                 ledOffButton.setEnabled(true);
-                Button ledOffButtonGreen = (Button) activity.findViewById(R.id.ledOffButtonrGreen);
+                Button ledOffButtonGreen = activity.findViewById(R.id.ledOffButtonrGreen);
                 ledOffButtonGreen.setEnabled(true);
             }
             else {
                 Toast myToast = Toast.makeText(activity, "You don't have access to this dispositive",
                         Toast.LENGTH_SHORT);
                 myToast.show();
-                Button ledOnButton = (Button) activity.findViewById(R.id.ledOnButtonRed);
+                Button ledOnButton = activity.findViewById(R.id.ledOnButtonRed);
                 ledOnButton.setEnabled(true);
-                Button ledOffButton = (Button) activity.findViewById(R.id.ledOffButtonrRed);
+                Button ledOffButton = activity.findViewById(R.id.ledOffButtonrRed);
                 ledOffButton.setEnabled(true);
-                Button ledOnButtonGreen = (Button) activity.findViewById(R.id.ledOnButtonrGreen);
+                Button ledOnButtonGreen = activity.findViewById(R.id.ledOnButtonrGreen);
                 ledOnButtonGreen.setEnabled(true);
-                Button ledOffButtonGreen = (Button) activity.findViewById(R.id.ledOffButtonrGreen);
+                Button ledOffButtonGreen = activity.findViewById(R.id.ledOffButtonrGreen);
                 ledOffButtonGreen.setEnabled(true);
             }
 

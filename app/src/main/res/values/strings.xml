@@ -18,7 +18,13 @@
     <string name="user_1">USER 1</string>
     <string name="led_green">LED GREEN</string>
     <string name="led_red">LED RED</string>
-    <string name="lights">LIGHTS</string>
+    <string name="light_levels">LIGHT LEVELS</string>
     <string name="user_2">USER 2</string>
     <string name="user_3">USER 3</string>
+    <string name="show_light_levels">Show Light Levels</string>
+    <string name="show_temperatures">Show temperatures</string>
+    <string name="green_led">Green Led</string>
+    <string name="red_led">Red Led</string>
+    <string name="last_10_light_levels">Last 10 light levels</string>
+    <string name="last_light_level">0</string>
 </resources>

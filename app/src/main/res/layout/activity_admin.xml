@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:minHeight="48dp"
-                android:text="@string/lights"
+                android:text="@string/light_levels"
                 tools:ignore="DuplicateSpeakableTextCheck" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:minHeight="48dp"
-                android:text="@string/lights"
+                android:text="@string/light_levels"
                 tools:ignore="DuplicateSpeakableTextCheck" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:minHeight="48dp"
-                android:text="@string/lights"
+                android:text="@string/light_levels"
                 tools:ignore="DuplicateSpeakableTextCheck" />
 
             <androidx.appcompat.widget.SwitchCompat
