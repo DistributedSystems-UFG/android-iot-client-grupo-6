@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.PrintWriter;
@@ -42,8 +40,8 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
     private static class GetTemperature extends Thread{
-        private Activity activity;
-        private String host, port, userId;
+        private final Activity activity;
+        private final String host, port, userId;
 
         private GetTemperature(Activity activity, String host, String port, String userId) {
             this.activity = activity;
@@ -58,7 +56,7 @@ public class TemperatureActivity extends AppCompatActivity {
                 new TemperatureActivity.GrpcTask(activity).execute(this.host, this.port,
                         this.userId, "tem1");
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -72,12 +70,11 @@ public class TemperatureActivity extends AppCompatActivity {
         private List<TemperatureJSON> listTemperatures;
 
         private GrpcTask(Activity activity) {
-            this.activityReference = new WeakReference<Activity>(activity);
+            this.activityReference = new WeakReference<>(activity);
         }
 
         @Override
         protected String doInBackground(String... params) {
-
             String host = params[0];
             String portStr = params[1];
             String userId = params[2];
@@ -112,8 +109,8 @@ public class TemperatureActivity extends AppCompatActivity {
                 Thread.currentThread().interrupt();
             }
             if (!listTemperatures.get(0).getDate().equals("NA")) {
-                TextView meanText = activity.findViewById(R.id.mean);
-                TextView lastText = activity.findViewById(R.id.lastTemp);
+                TextView meanText = activity.findViewById(R.id.meanTemperature);
+                TextView lastText = activity.findViewById(R.id.lastTemperature);
                 float mean = calculateMean();
                 String text = makeLastText();
                 meanText.setText(String.format("%.2f", mean));
@@ -136,10 +133,13 @@ public class TemperatureActivity extends AppCompatActivity {
         }
 
         private String makeLastText() {
+            int indice = 0;
             String text = "";
             for(TemperatureJSON temperature: listTemperatures) {
-                text = text + "Temperature: " + String.valueOf(temperature.getTemperature()) +
-                        "       Date:" + temperature.getDate() + "\n";
+                indice = indice + 1;
+                text = text + "Nº" + indice + "\n\t*Temperature: " +
+                        temperature.getTemperature() + "\n\t*Date: " +
+                        temperature.getDate() + "\n";
             }
             return text;
         }

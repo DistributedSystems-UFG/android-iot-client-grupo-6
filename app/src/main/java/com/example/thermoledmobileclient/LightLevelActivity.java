@@ -109,7 +109,7 @@ public class LightLevelActivity extends AppCompatActivity {
                 Thread.currentThread().interrupt();
             }
             if (!listLightLevels.get(0).getDate().equals("NA")) {
-                TextView meanText = activity.findViewById(R.id.mean);
+                TextView meanText = activity.findViewById(R.id.meanLightLevel);
                 TextView lastText = activity.findViewById(R.id.lastLightLevel);
                 float mean = calculateMean();
                 String text = makeLastText();
