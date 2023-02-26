@@ -53,9 +53,11 @@ public class HomeActivity extends AppCompatActivity {
         ledGreen = findViewById(R.id.ledGreenTextView);
         ledOnButtonGreen = findViewById(R.id.ledOnButtonrGreen);
         ledOffButtonGreen = findViewById(R.id.ledOffButtonrGreen);
+        // Cria uma thread para ficar atualizando os dispositivos disponiveis
         new UIThread(this, this.host, this.port, this.userId).start();
     }
 
+    // Acao do botao, cria e inicia uma nova activity
     public void getTemperature(View view) {
         Intent intent = new Intent(this, TemperatureActivity.class);
         String message = host + "," + port + "," + userId;
@@ -63,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
         this.startActivity(intent);
     }
 
+    // Acao do botao, cria e inicia uma nova activity
     public void getLightLevel(View view) {
         Intent intent = new Intent(this, LightLevelActivity.class);
         String message = host + "," + port + "," + userId;
@@ -70,21 +73,25 @@ public class HomeActivity extends AppCompatActivity {
         this.startActivity(intent);
     }
 
+    // Acao do botao, cria uma classe para fazer uma solicitacao gRPC
     public void ledOnRequestRed(View view) {
         ledOnButtonRed.setEnabled(false);
         new GrpcTask2(this).execute(this.host, this.port, "led1", this.userId, "1");
     }
 
+    // Acao do botao, cria uma classe para fazer uma solicitacao gRPC
     public void ledOffRequestRed(View view) {
         ledOffButtonRed.setEnabled(false);
         new GrpcTask2(this).execute(this.host, this.port, "led1", this.userId, "0");
     }
 
+    // Acao do botao, cria uma classe para fazer uma solicitacao gRPC
     public void ledOnRequestGreen(View view) {
         ledOnButtonGreen.setEnabled(false);
         new GrpcTask2(this).execute(this.host, this.port, "led2", this.userId, "1");
     }
 
+    // Acao do botao, cria uma classe para fazer uma solicitacao gRPC
     public void ledOffRequestGreen(View view) {
         ledOffButtonGreen.setEnabled(false);
         new GrpcTask2(this).execute(this.host, this.port, "led2", this.userId, "0");
@@ -107,6 +114,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            // Loop que continuara ate esta activity ser destruida
             while (!activity.isDestroyed()) {
                 getUserDevices();
                 for (String device: userDevices) {
@@ -116,6 +124,7 @@ public class HomeActivity extends AppCompatActivity {
                 changeTempVisibility();
                 changeLedRedVisibility();
                 changeLedGreenVisibility();
+                // UI Thread para mudar as visibilades da activity
                 activity.runOnUiThread(() -> {
                     lightLevel.setVisibility(lightLevelVisibility);
                     lightLevelButton.setVisibility(lightLevelVisibility);
@@ -131,6 +140,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
+        // Funcao para definir a visibilidade do nivel de luz
         private void changeLightVisibility() {
             if (userDevices.contains("lum1")) {
                 lightLevelVisibility = View.VISIBLE;
@@ -140,6 +150,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
+        // Funcao para definir a visibilidade da temperatura
         private void changeTempVisibility() {
             if (userDevices.contains("tem1")) {
                 tempVisibility = View.VISIBLE;
@@ -149,6 +160,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
+        // Funcao para definir a visibilidade do led vermelho
         private void changeLedRedVisibility() {
             if (userDevices.contains("led1")) {
                 ledRedVisibility = View.VISIBLE;
@@ -158,6 +170,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
+        // Funcao para definir a visibilidade do led verde
         private void changeLedGreenVisibility() {
             if (userDevices.contains("led2")) {
                 ledGreenVisibility = View.VISIBLE;
@@ -167,13 +180,16 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
+        // Funcao que faz a requisicao GetUserDevice ao servidor gRPC
         private void getUserDevices() {
+            // Conexao com o servidor e realizacao da requisicao
             try {
                 int port = TextUtils.isEmpty(portStr) ? 0 : Integer.parseInt(portStr);
                 channel = ManagedChannelBuilder.forAddress(this.host, port).usePlaintext().build();
                 IoTServiceGrpc.IoTServiceBlockingStub stub = IoTServiceGrpc.newBlockingStub(channel);
                 GetDeviceRequest request = GetDeviceRequest.newBuilder().setUserId(this.userId).build();
                 GetDeviceReply reply = stub.getUserDevices(request);
+                // Retornando a lista de dispositivos do usuario
                 this.userDevices = reply.getDeviceIdList();
             } catch (Exception e) {
                 StringWriter sw = new StringWriter();
@@ -182,6 +198,7 @@ public class HomeActivity extends AppCompatActivity {
                 pw.flush();
                 this.userDevices = null;
             }
+            // Encerrar a conexao com o servidor
             try {
                 channel.shutdown().awaitTermination(1, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
@@ -190,6 +207,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    // Classe que faz a solicitacao BlinkLed do servidor gRPC
     private static class GrpcTask2 extends AsyncTask<String, Void, String> {
         private final WeakReference<Activity> activityReference;
         private ManagedChannel channel;
@@ -208,6 +226,7 @@ public class HomeActivity extends AppCompatActivity {
             String userId = params[3];
             int ledState = Integer.parseInt(params[4]);
             int port = TextUtils.isEmpty(portStr) ? 0 : Integer.parseInt(portStr);
+            // Conexao com o servidor e realizacao da requisicao
             try {
                 channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
                 IoTServiceGrpc.IoTServiceBlockingStub stub = IoTServiceGrpc.newBlockingStub(channel);
@@ -226,26 +245,32 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            // Encerrar a conexao com o servidor
             try {
                 channel.shutdown().awaitTermination(1, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
+            // Verificar se a activity ainda esta ativa e retornar nao se estiver
             Activity activity = activityReference.get();
             if (activity == null) {
                 return;
             }
+            // Verifica se o servidor retornou o valor 1
             if (result.equals("1")) {
                 Button ledOnButton = activity.findViewById(R.id.ledOnButtonRed);
                 ledOnButton.setEnabled(true);
                 Button ledOnButtonGreen = activity.findViewById(R.id.ledOnButtonrGreen);
                 ledOnButtonGreen.setEnabled(true);
-            } else if (result.equals("0")){
+            }
+            // Verifica se o servidor retornou o valor 0
+            else if (result.equals("0")){
                 Button ledOffButton = activity.findViewById(R.id.ledOffButtonrRed);
                 ledOffButton.setEnabled(true);
                 Button ledOffButtonGreen = activity.findViewById(R.id.ledOffButtonrGreen);
                 ledOffButtonGreen.setEnabled(true);
             }
+            // Caso nenhum dos if forem verdadeiros entao o usuario nao tem permissao
             else {
                 Toast myToast = Toast.makeText(activity, "You don't have access to this dispositive",
                         Toast.LENGTH_SHORT);

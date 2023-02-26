@@ -36,6 +36,7 @@ public class TemperatureActivity extends AppCompatActivity {
         this.port = message[1];
         this.userId = message[2];
 
+        // Cria uma nova thread para ficar atualizando os valores
         new GetTemperature(this, this.host, this.port, this.userId).start();
     }
 
@@ -52,7 +53,9 @@ public class TemperatureActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            // Loop que continuara ate esta activity ser destruida
             while (!activity.isDestroyed()) {
+                // Cria uma classe para fazer uma solicitacao gRPC
                 new TemperatureActivity.GrpcTask(activity).execute(this.host, this.port,
                         this.userId, "tem1");
                 try {
@@ -64,6 +67,7 @@ public class TemperatureActivity extends AppCompatActivity {
         }
     }
 
+    // Classe que faz a solicitacao SayTemperature do servidor gRPC
     private static class GrpcTask extends AsyncTask<String, Void, String> {
         private final WeakReference<Activity> activityReference;
         private ManagedChannel channel;
@@ -80,6 +84,7 @@ public class TemperatureActivity extends AppCompatActivity {
             String userId = params[2];
             String sensorId = params[3];
             int port = TextUtils.isEmpty(portStr) ? 0 : Integer.parseInt(portStr);
+            // Conexao com o servidor e realizacao da requisicao
             try {
                 channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
                 IoTServiceGrpc.IoTServiceBlockingStub stub = IoTServiceGrpc.newBlockingStub(channel);
@@ -99,15 +104,18 @@ public class TemperatureActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            // Encerrar a conexao com o servidor
             try {
                 channel.shutdown().awaitTermination(1, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
+            // Verificar se a activity ainda esta ativa e retornar nao se estiver
             Activity activity = activityReference.get();
             if (activity == null) {
                 Thread.currentThread().interrupt();
             }
+            // Verifica se a requisicao foi bem-sucedida
             if (!listTemperatures.get(0).getDate().equals("NA")) {
                 TextView meanText = activity.findViewById(R.id.meanTemperature);
                 TextView lastText = activity.findViewById(R.id.lastTemperature);
@@ -116,12 +124,14 @@ public class TemperatureActivity extends AppCompatActivity {
                 meanText.setText(String.format("%.2f", mean));
                 lastText.setText(text);
             }
+            // Finaliza a activity se o usuario nao tiver permissao
             else {
                 activity.finish();
                 Thread.currentThread().interrupt();
             }
         }
 
+        // Funcao para calcular a media das temperaturas
         private float calculateMean() {
             float soma = 0;
             int qtd = 0;
@@ -132,6 +142,7 @@ public class TemperatureActivity extends AppCompatActivity {
             return soma / qtd;
         }
 
+        // Funcao que gera um texto com as ultimas 10 temperaturas
         private String makeLastText() {
             int indice = 0;
             String text = "";

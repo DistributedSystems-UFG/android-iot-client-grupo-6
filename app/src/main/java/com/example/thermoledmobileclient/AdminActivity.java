@@ -80,8 +80,11 @@ public class AdminActivity extends AppCompatActivity {
         ledRed3.setOnCheckedChangeListener(new Handler());
     }
 
+    // Funcao que pega todas as permissoes de dispositivos dos usuarios
+    // para mostrar corretamente nos switch da activity
     private void initalize() {
         List<String> userDevices;
+        // Um loop para configurar os switchs de cada usuario
         for (String userId : usersId) {
             userDevices = getUserDevice(userId);
             if (userDevices.contains("tem1")) {
@@ -111,15 +114,19 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    // Funcao que faz a requisicao GetUserDevice ao servidor gRPC
     private List<String> getUserDevice(String userId) {
         ManagedChannel channel;
+        // Conexao com o servidor e realizacao da requisicao
         try {
             int portAux = TextUtils.isEmpty(port) ? 0 : Integer.parseInt(port);
             channel = ManagedChannelBuilder.forAddress(host, portAux).usePlaintext().build();
             IoTServiceGrpc.IoTServiceBlockingStub stub = IoTServiceGrpc.newBlockingStub(channel);
             GetDeviceRequest request = GetDeviceRequest.newBuilder().setUserId(userId).build();
             GetDeviceReply reply = stub.getUserDevices(request);
+            // Encerrar a conexao com o servidor
             channel.shutdown().awaitTermination(1, TimeUnit.SECONDS);
+            // Retornando a lista de dispositivos do usuario
             return reply.getDeviceIdList();
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
@@ -130,6 +137,7 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    // Funcao para trocar o switch da temperatura
     private void changeSwitchTemp(String userId, boolean checked) {
         switch (userId) {
             case "usr1":
@@ -144,6 +152,7 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    // Funcao para trocar o switch do nivel de luz
     private void changeSwitchLight(String userId, boolean checked) {
         switch (userId) {
             case "usr1":
@@ -158,6 +167,7 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    // Funcao para trocar o switch do led vermelho
     private void changeSwitchLedRed(String userId, boolean checked) {
         switch (userId) {
             case "usr1":
@@ -172,6 +182,7 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    // Funcao para trocar o switch do led verde
     private void changeSwitchLedGreen(String userId, boolean checked) {
         switch (userId) {
             case "usr1":
@@ -186,6 +197,7 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    // Classe handler para os switchs
     private class Handler implements CompoundButton.OnCheckedChangeListener {
 
         @Override
@@ -195,6 +207,7 @@ public class AdminActivity extends AppCompatActivity {
             checkUser3();
         }
 
+        // Funcao para ficar verificando os switchs do usuario 1
         private void checkUser1() {
             if (temp1.isChecked()) {
                 new GrpcTask(activity).execute(host, port, "usr1", "tem1", "ADD");
@@ -222,6 +235,7 @@ public class AdminActivity extends AppCompatActivity {
             }
         }
 
+        // Funcao para ficar verificando os switchs do usuario 2
         private void checkUser2() {
             if (temp2.isChecked()) {
                 new GrpcTask(activity).execute(host, port, "usr2", "tem1", "ADD");
@@ -249,6 +263,7 @@ public class AdminActivity extends AppCompatActivity {
             }
         }
 
+        // Funcao para ficar verificando os switchs do usuario 3
         private void checkUser3() {
             if (temp3.isChecked()) {
                 new GrpcTask(activity).execute(host, port, "usr3", "tem1", "ADD");
@@ -277,6 +292,8 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    // Classe que faz a solicitacao AddUserDevice ou RemoveUserDevice
+    // do servidor gRPC
     private static class GrpcTask extends AsyncTask<String, Void, String> {
         private final WeakReference<Activity> activityReference;
         private ManagedChannel channel;
@@ -293,12 +310,14 @@ public class AdminActivity extends AppCompatActivity {
             String deviceId = params[3];
             String operation = params[4];
             int port = TextUtils.isEmpty(portStr) ? 0 : Integer.parseInt(portStr);
+            // Conexao com o servidor e realizacao da requisicao
             try {
                 channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
                 IoTServiceGrpc.IoTServiceBlockingStub stub = IoTServiceGrpc.newBlockingStub(channel);
                 DeviceRequest request = DeviceRequest.newBuilder().setUserId(userId)
                         .setDeviceId(deviceId).build();
                 DeviceReply reply;
+                // Verificar se vai fazer uma requisicao de adicao ou remocao
                 if (operation.equals("ADD")) {
                     reply = stub.addUserDevice(request);
                 }
@@ -317,15 +336,18 @@ public class AdminActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            // Encerrar a conexao com o servidor
             try {
                 channel.shutdown().awaitTermination(1, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
+            // Verificar se a activity ainda esta ativa e retornar se nao estiver
             Activity activity = activityReference.get();
             if (activity == null) {
                 return;
             }
+            // Verificar se ocorreu algum erro
             if (!result.equals("OK")) {
                 Toast myToast = Toast.makeText(activity, result,
                         Toast.LENGTH_SHORT);
