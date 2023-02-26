@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background_azul">#FAFAFA</color>
     <color name="background_botão">#383838</color>
+    <color name="gray">#D9D9D9</color>
 </resources>

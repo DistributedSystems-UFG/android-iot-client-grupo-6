@@ -2,7 +2,8 @@
     <string name="app_name">ThermoLed Mobile Client</string>
     <string name="get_temperature">Get Temperature</string>
     <string name="led_on">Led On</string>
-    <string name="temperature_will_show_here">Temperature will show here</string>
+    <string name="show_light_levels">Show Light Levels</string>
+    <string name="show_temperatures">Show temperatures</string>
     <string name="host_hint">HOST</string>
     <string name="port_hint">PORT</string>
     <string name="led_off">Led Off</string>
@@ -21,10 +22,6 @@
     <string name="light_levels">LIGHT LEVELS</string>
     <string name="user_2">USER 2</string>
     <string name="user_3">USER 3</string>
-    <string name="show_light_levels">Show Light Levels</string>
-    <string name="show_temperatures">Show temperatures</string>
-    <string name="green_led">Green Led</string>
-    <string name="red_led">Red Led</string>
     <string name="last_10_light_levels">Last 10 light levels</string>
     <string name="last_light_level">0</string>
 </resources>

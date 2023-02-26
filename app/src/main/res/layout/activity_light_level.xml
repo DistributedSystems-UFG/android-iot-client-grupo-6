@@ -7,7 +7,7 @@
     tools:context=".LightLevelActivity">
 
     <TextView
-        android:id="@+id/textViewMean"
+        android:id="@+id/textViewMeanLight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/mean"
+        android:id="@+id/meanLightLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -26,7 +26,7 @@
         android:text="@string/mean_text"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textViewMean"
+        app:layout_constraintStart_toEndOf="@+id/textViewMeanLight"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -40,7 +40,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMean" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewMeanLight" />
 
     <ScrollView
         android:layout_width="343dp"
